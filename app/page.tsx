@@ -20,10 +20,6 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-4xl font-bold text-purple-800 mb-4">Chain Abstracted Token Transfers</h2>
             <p className="text-xl text-gray-600">Instant multi-chain token transfer in a single zap</p>
-            {/* <Button className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-8 py-4">
-              Get Started
-              <Zap className="ml-2 h-5 w-5" />
-            </Button> */}
           </div>
         </section>
 
@@ -53,7 +49,7 @@ export default function LandingPage() {
 
       <footer className="bg-purple-900 text-white py-8">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2023 Multichain Disperse. All rights reserved.</p>
+          <p>&copy;<a href="https://www.alphadevs.dev/" target="_blank"> alpahdevs</a></p>
         </div>
       </footer>
     </div>
