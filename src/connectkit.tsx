@@ -12,7 +12,7 @@ import { EntryPosition, wallet } from '@particle-network/connectkit/wallet';
 import { aa } from '@particle-network/connectkit/aa';
 // aa end
 // evm start
-import { arbitrumSepolia, optimismSepolia, sepolia } from '@particle-network/connectkit/chains';
+import { arbitrumSepolia, baseSepolia, optimismSepolia, sepolia } from '@particle-network/connectkit/chains';
 import { evmWalletConnectors } from '@particle-network/connectkit/evm';
 // evm end
 
@@ -28,7 +28,7 @@ if (!projectId || !clientKey || !appId) {
 
 const supportChains: Chain[] = [];
 // evm start
-supportChains.push(sepolia, arbitrumSepolia, optimismSepolia);
+supportChains.push(sepolia, arbitrumSepolia, optimismSepolia, baseSepolia);
 // evm end
 
 
