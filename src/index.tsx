@@ -2,7 +2,8 @@
 
 import { ConnectButton, useAccount } from '@particle-network/connectkit'
 import { isEVMChain } from '@particle-network/connectkit/chains'
-import Demo from './components/demo'
+import { UnifiedBalance } from './components/disperse/UnifiedBalance'
+import { DisperseTabs } from './components/disperse/DisperseTabs'
 
 export default function Component() {
   const { isConnected, chain } = useAccount()
@@ -13,11 +14,22 @@ export default function Component() {
         <p className="text-lg font-bold">Multichain Disperse</p>
         <ConnectButton />
       </header>
-      <main className="flex-grow flex justify-center items-center p-8 mt-16">
+      <main className="mt-16 w-full">
         {isConnected && chain && isEVMChain(chain) ? (
-          <Demo />
+          <div className='flex flex-col gap-4 w-full px-72 pt-8'>
+            <div className='px-4'>
+              <p className="text-2xl text-purple-500">Multichain Disperse</p>
+              <p className="text-gray-400">
+                Chain Abstracted Disperse App. Instant multi chain token transfer in single zap.
+              </p>
+            </div>
+            <div className="space-y-6 pb-10">
+              <UnifiedBalance />
+              <DisperseTabs />
+            </div>
+          </div>
         ) : (
-          <div className="flex flex-col items-center gap-4 justify-center text-center">
+          <div className="flex flex-col items-center gap-4 justify-center text-center mt-48">
             <p className="text-lg">Please connect your wallet to get started with</p>
             <p className="font-semibold text-5xl text-purple-600">Multichain Disperse</p>
           </div>
