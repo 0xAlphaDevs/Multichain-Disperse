@@ -32,15 +32,15 @@ export function UnifiedBalance() {
             <span className="text-xs text-green-500 ml-1">+2.24%</span>
           </div>
           <div className="flex justify-between mb-4">
-            <Button size="sm" variant="outline" className="text-white border-gray-600">
+            <Button size="sm" className="bg-white text-black hover:bg-gray-100">
               <ArrowDownIcon className="w-4 h-4 mr-2" />
               Deposit
             </Button>
-            <Button size="sm" variant="outline" className="text-white border-gray-600">
+            <Button size="sm" className="bg-white text-black hover:bg-gray-100">
               <ArrowUpIcon className="w-4 h-4 mr-2" />
               Transfer
             </Button>
-            <Button size="sm" variant="outline" className="text-white border-gray-600">
+            <Button size="sm" className="bg-white text-black hover:bg-gray-100">
               Convert
             </Button>
           </div>

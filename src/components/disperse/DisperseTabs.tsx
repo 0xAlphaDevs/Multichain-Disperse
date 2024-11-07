@@ -46,13 +46,13 @@ export function DisperseTabs() {
   }
 
   return (
-    <Tabs defaultValue="ether" onValueChange={setTransferType} className="w-full">
+    <Tabs defaultValue="ether" onValueChange={setTransferType} className="w-full px-4">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="ether">Send Ether</TabsTrigger>
         <TabsTrigger value="token">Send Token</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="ether" className="space-y-4">
+      <TabsContent value="ether" className="space-y-4 px-4">
         <div className="space-y-4 mt-4">
           {etherRows.map((row, index) => (
             <div key={index} className="flex items-center gap-4 justify-start">
@@ -120,7 +120,7 @@ export function DisperseTabs() {
         </div>
       </TabsContent>
 
-      <TabsContent value="token" className="space-y-4">
+      <TabsContent value="token" className="space-y-4 px-4">
         <div className="space-y-4 mt-4">
           <Select onValueChange={setSelectedToken}>
             <SelectTrigger>
