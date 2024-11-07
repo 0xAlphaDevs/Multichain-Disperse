@@ -15,12 +15,12 @@ export default function Component() {
         <p className="text-lg font-bold">Multichain Disperse</p>
         <ConnectButton />
       </header>
-      <main className="mt-16 w-full">
+      <main className="mt-20 w-full">
         {isConnected && chain && isEVMChain(chain) ? (
-          <div className='flex flex-col gap-4 w-full px-64 pt-8'>
-            <div className='px-4'>
-              <p className="text-2xl text-purple-500 font-semibold">Multichain Disperse</p>
-              <p className="text-gray-400 text-sm">
+          <div className='flex flex-col gap-4 w-full px-48 pt-8'>
+            <div className=''>
+              <p className="text-3xl text-purple-500 font-semibold">Multichain Disperse</p>
+              <p className="text-gray-500 text-sm">
                 Chain Abstracted Disperse App. Instant multi chain token transfer in single zap.
               </p>
             </div>
