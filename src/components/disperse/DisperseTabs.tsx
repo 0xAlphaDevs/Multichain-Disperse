@@ -86,7 +86,7 @@ export function DisperseTabs() {
               >
                 <Input
                   placeholder="Address"
-                  className="w-[400px]"
+                  className="w-[500px]"
                   value={row.address}
                   onChange={(e) =>
                     updateRow("ether", index, "address", e.target.value)
@@ -203,7 +203,7 @@ export function DisperseTabs() {
               >
                 <Input
                   placeholder="Address"
-                  className="w-[400px]"
+                  className="w-[500px]"
                   value={row.address}
                   onChange={(e) =>
                     updateRow("token", index, "address", e.target.value)
@@ -271,7 +271,7 @@ export function DisperseTabs() {
           </div>
         </TabsContent>
       </Tabs>
-      <div className="flex justify-center pt-8">
+      <div className="flex justify-center pt-6 pb-4">
         <Button>Send Transaction</Button>
       </div>
     </Card>
