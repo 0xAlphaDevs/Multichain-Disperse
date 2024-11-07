@@ -18,7 +18,7 @@ export default function Component() {
         {isConnected && chain && isEVMChain(chain) ? (
           <div className='flex flex-col gap-4 w-full px-72 pt-8'>
             <div className='px-4'>
-              <p className="text-2xl text-purple-500">Multichain Disperse</p>
+              <p className="text-2xl text-purple-500 font-semibold">Multichain Disperse</p>
               <p className="text-gray-400">
                 Chain Abstracted Disperse App. Instant multi chain token transfer in single zap.
               </p>
