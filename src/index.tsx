@@ -17,7 +17,7 @@ export default function Component() {
       </header>
       <main className="mt-16 w-full">
         {isConnected && chain && isEVMChain(chain) ? (
-          <div className='flex flex-col gap-4 w-full px-72 pt-8'>
+          <div className='flex flex-col gap-4 w-full px-64 pt-8'>
             <div className='px-4'>
               <p className="text-2xl text-purple-500 font-semibold">Multichain Disperse</p>
               <p className="text-gray-400 text-sm">
@@ -27,11 +27,6 @@ export default function Component() {
             <div className="space-y-6 pb-10">
               <UnifiedBalance />
               <DisperseTabs />
-              <div>
-                <Button>
-                  Send Transaction
-                </Button>
-              </div>
             </div>
           </div>
         ) : (

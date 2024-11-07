@@ -1,8 +1,9 @@
 'use client'
 
-import { ArrowDownIcon, ArrowUpIcon, RefreshCwIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { RefreshCwIcon } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
+import { Card } from '@/components/ui/card'
 
 const allocationData = [
   { chain: 'Arbitrum', amount: 559.78, color: 'bg-purple-500' },
@@ -12,40 +13,47 @@ const allocationData = [
 ]
 
 export function UnifiedBalance() {
+  const [isSpinning, setIsSpinning] = useState(false)
   const totalBalance = allocationData.reduce((sum, item) => sum + item.amount, 0)
 
+  const handleRefresh = () => {
+    setIsSpinning(true)
+    // Simulating a refresh action
+    setTimeout(() => setIsSpinning(false), 1000)
+  }
+
   return (
-    <div className="bg-muted p-4 rounded-lg">
+    <div className="bg-muted py-4 rounded-lg">
       <h3 className="font-medium mb-2">Unified ETH Balance</h3>
-      <div className=" text-white flex gap-10">
-        <div className="flex-1 bg-black rounded-lg p-4">
+      <div className="text-white flex gap-8">
+        <Card className="flex-1 rounded-lg p-4">
           <div className="flex justify-between items-center mb-4">
             <div>
               <p className="text-sm text-gray-400">Universal Account</p>
               <p className="text-xs text-gray-500">0x5a28...5278</p>
             </div>
-            <RefreshCwIcon className="w-4 h-4 text-gray-400" />
+            <button
+              onClick={handleRefresh}
+              className="focus:outline-none"
+              aria-label="Refresh balance"
+            >
+              <RefreshCwIcon
+                className={`w-4 h-4 text-gray-400 transition-transform duration-1000 ease-in-out ${isSpinning ? 'animate-spin' : ''
+                  }`}
+              />
+            </button>
           </div>
-          <div className="flex items-baseline mb-4">
-            <span className="text-3xl font-bold">${totalBalance.toFixed(2)}</span>
-            <span className="text-sm text-green-500 ml-2">+$22.39</span>
-            <span className="text-xs text-green-500 ml-1">+2.24%</span>
+          <div className='flex flex-col'>
+            <div className="flex">
+              <span className="text-3xl font-bold">${totalBalance.toFixed(2)}</span>
+            </div>
+            <div>
+              <span className="text-sm text-green-500">+$22.39</span>
+              <span className="text-xs text-green-500 ml-1">+2.24%</span>
+            </div>
           </div>
-          <div className="flex justify-between mb-4">
-            <Button size="sm" className="bg-white text-black hover:bg-gray-100">
-              <ArrowDownIcon className="w-4 h-4 mr-2" />
-              Deposit
-            </Button>
-            <Button size="sm" className="bg-white text-black hover:bg-gray-100">
-              <ArrowUpIcon className="w-4 h-4 mr-2" />
-              Transfer
-            </Button>
-            <Button size="sm" className="bg-white text-black hover:bg-gray-100">
-              Convert
-            </Button>
-          </div>
-        </div>
-        <div className="flex-1 bg-black rounded-lg p-4">
+        </Card>
+        <Card className="flex-1 rounded-lg p-4">
           <h4 className="text-sm font-medium mb-2">Allocation</h4>
           <div className="space-y-2">
             {allocationData.map((item) => (
@@ -61,7 +69,7 @@ export function UnifiedBalance() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   )
