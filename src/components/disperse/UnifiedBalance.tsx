@@ -105,7 +105,7 @@ export function UnifiedBalance() {
         </Card>
 
         <Card className="flex-1 p-4">
-          <h4 className="text-xl font-semibold mb-4">Allocation</h4>
+          <h4 className="text-lg font-semibold mb-4">Allocation</h4>
           <div className="space-y-2">
             {allocationData.map((item) => (
               <div key={item.chain} className="space-y-1">
