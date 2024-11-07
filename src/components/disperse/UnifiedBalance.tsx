@@ -53,10 +53,15 @@ export function UnifiedBalance() {
 
   return (
     <div className="bg-muted py-4 rounded-lg">
-      <h3 className="font-medium mb-2">Unified ETH Balance</h3>
+      <h3 className="font-bold text-lg mb-2">Unified ETH Balance</h3>
       <div className="text-white flex gap-8">
-        <Card className="flex-1 rounded-lg p-4">
+        <Card className="flex-1 p-4">
           <div className="flex justify-between items-center mb-4">
+            <div>
+              <div className="bg-gradient-to-r from-purple-500 to-purple-700 rounded-full h-12 w-12 flex items-center justify-center">
+                {/* Content inside the circle, if any */}
+              </div>
+            </div>
             <div>
               <p className="text-sm text-gray-400">Universal Account</p>
               <p className="text-xs text-gray-500">0x5a28...5278</p>
@@ -67,9 +72,8 @@ export function UnifiedBalance() {
               aria-label="Refresh balance"
             >
               <RefreshCwIcon
-                className={`w-4 h-4 text-gray-400 transition-transform duration-1000 ease-in-out ${
-                  isSpinning ? "animate-spin" : ""
-                }`}
+                className={`w-4 h-4 text-gray-400 transition-transform duration-1000 ease-in-out ${isSpinning ? "animate-spin" : ""
+                  }`}
               />
             </button>
           </div>
@@ -86,7 +90,7 @@ export function UnifiedBalance() {
           </div>
         </Card>
 
-        <Card className="flex-1 rounded-lg p-4">
+        <Card className="flex-1 p-4">
           <h4 className="text-sm font-medium mb-2">Allocation</h4>
           <div className="space-y-2">
             {allocationData.map((item) => (
