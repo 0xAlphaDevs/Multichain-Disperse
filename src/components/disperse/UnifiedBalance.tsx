@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { RefreshCwIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
+import { useKlasterContext } from "@/context/KlasterContext";
 
 const allocationData = [
   {
@@ -34,11 +35,21 @@ export function UnifiedBalance() {
     0
   );
 
+  const { klaster, mcClient } = useKlasterContext();
+
   const handleRefresh = () => {
     setIsSpinning(true);
     // Simulating a refresh action
     setTimeout(() => setIsSpinning(false), 1000);
   };
+
+  useEffect(() => {
+    if (!klaster || !mcClient) return;
+    else {
+      console.log("MC Client", mcClient);
+      console.log("klaster", klaster);
+    }
+  }, [klaster, mcClient]);
 
   return (
     <div className="bg-muted py-4 rounded-lg">

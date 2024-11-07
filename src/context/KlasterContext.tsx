@@ -1,0 +1,98 @@
+import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  AccountInitData,
+  BicoV2AccountInitParams,
+  buildMultichainReadonlyClient,
+  buildRpcInfo,
+  initKlaster,
+  klasterNodeHost,
+  KlasterSDK,
+  loadBiconomyV2Account,
+  loadSafeV141Account,
+  mcUSDC,
+  mcUSDT,
+  MultichainClient,
+  MultichainTokenMapping,
+} from "klaster-sdk";
+import { createWalletClient, custom } from "viem";
+import { useAccount } from "@particle-network/connectkit";
+import {
+  base,
+  optimism,
+  mainnet,
+  arbitrum,
+} from "@particle-network/connectkit/chains";
+
+interface KlasterContextProps {
+  klaster: KlasterSDK<AccountInitData<BicoV2AccountInitParams>> | undefined;
+  mcClient: MultichainClient | undefined;
+}
+
+interface KlasterProviderProps {
+  children: React.ReactNode;
+}
+
+// create a context for the Klaster SDK
+const KlasterContext = createContext<KlasterContextProps>({
+  klaster: undefined,
+  mcClient: undefined,
+});
+
+// create a provider for the Klaster SDK
+
+export const KlasterProvider: React.FC<KlasterProviderProps> = ({
+  children,
+}) => {
+  const [klaster, setKlaster] =
+    useState<KlasterSDK<AccountInitData<BicoV2AccountInitParams>>>();
+  const [mcClient, setMcClient] = useState<MultichainClient>();
+  const { isConnected } = useAccount();
+
+  useEffect(() => {
+    console.log("isConnected", isConnected);
+    if (!isConnected) return;
+    console.log("setting up klaster context");
+    (async () => {
+      const signer = createWalletClient({
+        transport: custom((window as any).ethereum),
+      });
+
+      const [address] = await signer.getAddresses();
+
+      const klaster = await initKlaster({
+        accountInitData: loadBiconomyV2Account({
+          owner: address, // Fetch
+        }),
+        nodeUrl: klasterNodeHost.default,
+      });
+
+      setKlaster(klaster);
+
+      const mcClient = buildMultichainReadonlyClient(
+        [optimism, base, mainnet, arbitrum].map((x) => {
+          return {
+            chainId: x.id,
+            rpcUrl: x.rpcUrls.default.http[0],
+          };
+        })
+      );
+
+      setMcClient(mcClient);
+    })();
+  }, [isConnected]);
+
+  return (
+    <KlasterContext.Provider value={{ klaster, mcClient }}>
+      {children}
+    </KlasterContext.Provider>
+  );
+};
+
+// Custom hook for easier context access
+export const useKlasterContext = (): KlasterContextProps => {
+  const context = useContext(KlasterContext);
+  if (!context) {
+    throw new Error("useKlasterContext must be used within KlasterProvider");
+  }
+  return context;
+};
