@@ -49,7 +49,7 @@ export default function LandingPage() {
 
       <footer className="bg-purple-900 text-white py-8">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy;<a href="https://www.alphadevs.dev/" target="_blank"> alpahdevs</a></p>
+          <p>&copy;<a href="https://www.alphadevs.dev/" target="_blank"> alphahdevs</a></p>
         </div>
       </footer>
     </div>

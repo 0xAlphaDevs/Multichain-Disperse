@@ -15,6 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { PlusCircle, X } from "lucide-react";
 import { Card } from "../ui/card";
+import toast from "react-hot-toast";
 
 export function DisperseTabs() {
   const [transferType, setTransferType] = useState("ether");
@@ -63,6 +64,10 @@ export function DisperseTabs() {
       newRows[index] = { ...newRows[index], [field]: value };
       setTokenRows(newRows);
     }
+  };
+
+  const handleSendTransaction = () => {
+    toast.success('Transaction sent successfully!');
   };
 
   return (
@@ -272,7 +277,7 @@ export function DisperseTabs() {
         </TabsContent>
       </Tabs>
       <div className="flex justify-center pt-6 pb-4">
-        <Button>Send Transaction</Button>
+        <Button onClick={handleSendTransaction}>Send Transaction</Button>
       </div>
     </Card>
   );
