@@ -13,8 +13,8 @@ export default function Component() {
   return (
     <KlasterProvider>
       <div className="flex flex-col min-h-screen">
-        <header className="fixed top-0 left-0 right-0 flex items-center justify-between py-4 px-8 bg-purple-900 text-white z-10">
-          <p className="text-lg font-bold">Multichain Disperse</p>
+        <header className="fixed top-0 left-0 right-0 flex items-center justify-between py-4 px-8 bg-white z-10">
+          <p className="text-2xl font-semibold text-purple-700">Multichain Disperse</p>
           <ConnectButton />
         </header>
         <main className="mt-16 w-full">
