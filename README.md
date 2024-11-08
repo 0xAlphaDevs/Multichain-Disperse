@@ -4,7 +4,9 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 
 ### Features
 
--
+- Easy user onboarding with Particle Connect using ERC-4337 smart accounts.
+- Leverage Klaster for seamless account abstraction and improved user experience using the Klaster SDK.
+- Transfer tokens across multiple chains effortlessly in a single transaction.
 
 ## Table of Contents
 
@@ -17,7 +19,7 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 ## Links
 
 - [Deployed URL](https://multichain-disperse-eight.vercel.app/)
-- [Presentation]()
+- [Presentation](https://www.canva.com/design/DAGV3KCbqFY/uYzMpf8leZBvRbK_3WJ0bg/view)
 - [Demo Video]()
 
 ## Sponsers Tech Stack
