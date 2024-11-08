@@ -17,6 +17,13 @@ import { PlusCircle, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import AllocationComponent from "./AllocationComponent";
+import { isAddress } from "viem";
+
+interface Row {
+  address: string;
+  chain: string;
+  amount: string;
+}
 
 export function DisperseTabs() {
   const [transferType, setTransferType] = useState("ether");
@@ -69,42 +76,98 @@ export function DisperseTabs() {
     }
   };
 
+  const chains = ["mainnet", "arbitrum", "optimism", "base"];
+
+  function checkValues(row: {
+    address: string;
+    chain: string;
+    amount: string;
+  }) {
+    if (
+      isAddress(row.address) &&
+      chains.includes(row.chain) &&
+      Number(row.amount) > 0
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   const parseTextareaContent = (content: string) => {
-    return content
-      .split('\n')
-      .map(line => {
-        const [address, chain, amount] = line.split(',').map(item => item.trim());
-        return { address, chain, amount };
-      })
-      .filter(row => row.address && row.chain && row.amount);
+    const data = content.split("\n").map((line) => {
+      const [address, chain, amount] = line
+        .split(",")
+        .map((item) => item.trim());
+      if (
+        !isAddress(address) ||
+        !chains.includes(chain) ||
+        Number(amount) <= 0
+      ) {
+        // toast.error("Invalid input format");
+        return { address: "", chain: "", amount: "" };
+      } else return { address, chain, amount };
+    });
+
+    console.log("Data:", data);
+
+    let errorInData = false;
+
+    const finalData = data.map((row) => {
+      if (!row.address || !row.chain || !row.amount) {
+        errorInData = true;
+      } else return data;
+    });
+
+    if (errorInData) {
+      return [];
+    } else return finalData;
   };
 
-  const handleSendTransaction = () => {
-    let dataToSend = [];
+  const handleSendTransaction = async () => {
+    let dataToSend: any = [];
 
     if (transferType === "ether") {
       if (etherTextareaContent.trim()) {
         dataToSend = parseTextareaContent(etherTextareaContent);
       } else {
-        dataToSend = etherRows.filter(row => row.address && row.chain && row.amount);
+        let errorInData = false;
+        etherRows.forEach((row) => {
+          if (!checkValues(row)) {
+            errorInData = true;
+          }
+        });
+        if (errorInData) {
+          dataToSend = [];
+        } else
+          dataToSend = etherRows.filter(
+            (row) => row.address && row.chain && row.amount
+          );
       }
-      console.log("Ether Transaction Data:", dataToSend);
     } else {
       if (tokenTextareaContent.trim()) {
         dataToSend = parseTextareaContent(tokenTextareaContent);
       } else {
-        dataToSend = tokenRows.filter(row => row.address && row.chain && row.amount);
+        dataToSend = tokenRows.filter(
+          (row) => row.address && row.chain && row.amount
+        );
       }
-      console.log("Token Transaction Data:", dataToSend);
     }
 
     if (dataToSend.length === 0) {
-      toast.error("Please fill in all required fields");
+      toast.error("Please fill data in required format");
       return;
     }
 
-    toast.success("Transaction sent successfully!");
+    // Send transaction
+    console.log("Txn data:", dataToSend);
+    await executeTransaction();
   };
+
+  // TO DO: Implement this function
+  async function executeTransaction() {
+    console.log("Executing transaction");
+    toast.success("Transaction sent successfully!");
+  }
 
   useEffect(() => {
     setSelectedToken("");
@@ -150,7 +213,7 @@ export function DisperseTabs() {
                     <SelectValue placeholder="Select Chain" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="polygon">Polygon</SelectItem>
+                    <SelectItem value="mainnet">Mainnet</SelectItem>
                     <SelectItem value="arbitrum">Arbitrum</SelectItem>
                     <SelectItem value="optimism">Optimism</SelectItem>
                     <SelectItem value="base">Base</SelectItem>
@@ -166,7 +229,7 @@ export function DisperseTabs() {
                   }
                   required
                 />
-                {index > 0 && (
+                {index >= 0 && (
                   <Button
                     variant="ghost"
                     size="icon"
@@ -197,7 +260,7 @@ export function DisperseTabs() {
             </div>
 
             <Textarea
-              placeholder="Paste comma separated values here&#10;Format: address,chain,amount&#10;Example: 0x123...,polygon,0.1"
+              placeholder="Paste comma separated values here&#10;Format: address,chain,amount&#10;Example: 0x123...,mainnet,0.1"
               className="min-h-[100px]"
               value={etherTextareaContent}
               onChange={(e) => setEtherTextareaContent(e.target.value)}
@@ -269,7 +332,7 @@ export function DisperseTabs() {
                         <SelectValue placeholder="Select Chain" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="polygon">Polygon</SelectItem>
+                        <SelectItem value="mainnet">Mainnet</SelectItem>
                         <SelectItem value="arbitrum">Arbitrum</SelectItem>
                         <SelectItem value="optimism">Optimism</SelectItem>
                         <SelectItem value="base">Base</SelectItem>
@@ -285,7 +348,7 @@ export function DisperseTabs() {
                       }
                       required
                     />
-                    {index > 0 && (
+                    {index >= 0 && (
                       <Button
                         variant="ghost"
                         size="icon"
