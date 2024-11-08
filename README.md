@@ -49,7 +49,7 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 1. Clone the repo `git clone https://github.com/0xAlphadevs/multichain-disperse.git`
 2. Install dependencies.
 3. Clone `.env.example` and rename it to `.env`.
-4. Start the development server.
+4. Start the development server `pnpm run dev`
 5. Access the web app in your browser at [http://localhost:3000](http://localhost:3000)
 
 ## Team
