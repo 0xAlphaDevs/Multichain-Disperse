@@ -17,16 +17,16 @@ import {
 
 const allocationData = [
   {
-    chain: "Arbitrum",
-    amount: 559.78,
-    color: "bg-purple-500",
-    icon: "/icons/arbitrum.png",
-  },
-  {
     chain: "Ethereum",
     amount: 352.32,
     color: "bg-blue-500",
     icon: "/icons/eth.png",
+  },
+  {
+    chain: "Arbitrum",
+    amount: 559.78,
+    color: "bg-purple-500",
+    icon: "/icons/arbitrum.png",
   },
   {
     chain: "Optimism",
