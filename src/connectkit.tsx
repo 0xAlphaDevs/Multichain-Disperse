@@ -21,7 +21,7 @@ import {
   optimism,
   optimismSepolia,
   sepolia,
-} from "@particle-network/connectkit/chains";
+} from "viem/chains";
 import { evmWalletConnectors } from "@particle-network/connectkit/evm";
 // evm end
 

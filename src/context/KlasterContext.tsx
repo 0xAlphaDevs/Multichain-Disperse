@@ -16,12 +16,7 @@ import {
 } from "klaster-sdk";
 import { createWalletClient, custom } from "viem";
 import { useAccount } from "@particle-network/connectkit";
-import {
-  base,
-  optimism,
-  mainnet,
-  arbitrum,
-} from "@particle-network/connectkit/chains";
+import { base, optimism, mainnet, arbitrum } from "viem/chains";
 
 interface KlasterContextProps {
   klaster: KlasterSDK<AccountInitData<BicoV2AccountInitParams>> | undefined;
@@ -68,14 +63,21 @@ export const KlasterProvider: React.FC<KlasterProviderProps> = ({
 
       setKlaster(klaster);
 
-      const mcClient = buildMultichainReadonlyClient(
-        [optimism, base, mainnet, arbitrum].map((x) => {
-          return {
-            chainId: x.id,
-            rpcUrl: x.rpcUrls.default.http[0],
-          };
-        })
-      );
+      // const mcClient = buildMultichainReadonlyClient(
+      //   [optimism, base, mainnet, arbitrum].map((x) => {
+      //     return {
+      //       chainId: x.id,
+      //       rpcUrl: x.rpcUrls.default.http[0],
+      //     };
+      //   })
+      // );
+
+      const mcClient = buildMultichainReadonlyClient([
+        { chainId: 1, rpcUrl: "https://1rpc.io/eth" },
+        { chainId: 42161, rpcUrl: "https://arb1.arbitrum.io/rpc" },
+        { chainId: 10, rpcUrl: "https://mainnet.optimism.io" },
+        { chainId: 8453, rpcUrl: "	https://mainnet.base.org" },
+      ]);
 
       setMcClient(mcClient);
     })();
