@@ -9,14 +9,17 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 - Disperse tokens to multiple accounts across multiple chains in a single inter-chain transaction.
 - Pay gas fee on any chain.
 
+![App Demo](./public/demo/app-demo.gif)
+
 ## Table of Contents
 
 1. [All Links](#links)
 2. [Sponsers Tech Stack](#sponsers-tech-stack)
 3. [High Level Architecture](#high-level-architecture)
 4. [App Demo](#app-demo-screenshots)
-5. [Instructions to setup and run locally ](#instructions-to-setup)
-6. [Team](#team)
+5. [Future Vision](#future-vision)
+6. [Instructions to setup and run locally ](#instructions-to-setup)
+7. [Team](#team)
 
 ## Links
 
@@ -32,24 +35,33 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 
 ## High Level Architecture
 
-![High Level Architecture](./public/high-level-architecture.png)
+![High Level Architecture](./public/demo/high-level-architecture.png)
 
 ## App Demo Screenshots
 
 **_Landing Page_**
-![Landing Page](./public/landing.png)
-
-**_Connect Wallet Page_**
-![Connect Wallet Page](./public/connect.png)
+![Landing Page](./public/demo/landing.png)
 
 **_Unified ETH Balance_**
-![Unified ETH Balance](./public/eth.png)
+![Unified ETH Balance](./public/demo/unified-eth-balance.png)
 
-**_Disperse_**
-![Disperse](./public/disperse.png)
+**_Disperse UI_**
+![Disperse](./public/demo/disperse-ui.png)
+
+**_Interchain Quote_**
+![Interchain Quote](./public/demo/interchain-quote.png)
+
+**_Sign And Execute Txn_**
+![Sign And Execute Txn](./public/demo/sign-and-execute.png)
 
 **_Transfer Completed_**
-![Transfer Completed](./public/transfer.png)
+![Transfer Completed](./public/demo/transfer-completed.png)
+
+## Future Vision
+
+- Add more chains.
+- Add more features.
+- Add more UI.
 
 ## Instructions to setup
 

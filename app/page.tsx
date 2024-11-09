@@ -30,12 +30,12 @@ export default function LandingPage() {
               <FeatureCard
                 icon={<Zap className="h-10 w-10 text-purple-600" />}
                 title="Multi-chain Transfers"
-                description="Transfer tokens across multiple chains effortlessly in a single transaction."
+                description="Disperse tokens to multiple accounts across multiple chains in a single inter-chain transaction."
               />
               <FeatureCard
                 icon={<Circle className="h-10 w-10 text-purple-600" />}
                 title="Klaster Integration"
-                description="Leverage Klaster for seamless account abstraction and improved user experience."
+                description="App level chain abstraction using the Klaster SDK and pay gas fee on any chain."
               />
               <FeatureCard
                 icon={<Shield className="h-10 w-10 text-purple-600" />}
