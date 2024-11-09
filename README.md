@@ -9,8 +9,6 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 - Disperse tokens to multiple accounts across multiple chains in a single inter-chain transaction.
 - Pay gas fee on any chain.
 
-![App Demo](./public/demo/app-demo.png)
-
 ## Table of Contents
 
 1. [All Links](#links)
@@ -25,7 +23,7 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 
 - [Deployed URL](https://multichain-disperse-eight.vercel.app/)
 - [Presentation](https://www.canva.com/design/DAGV3KCbqFY/uYzMpf8leZBvRbK_3WJ0bg/view)
-- [Demo Video](www.youtube.com/)
+- [Demo Video]()
 - [Example Interchain USDC disperse Txn](https://explorer.klaster.io/details/0x76ec8180e8a1ac2493743c240c1112e0b93b3fc0ceda283bda6bb7c7bd062fb0)
 
 ## Sponsers Tech Stack
@@ -40,7 +38,7 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 ## App Demo Screenshots
 
 **_Landing Page_**
-![Landing Page](./public/demo/landing.png)
+![Landing Page](./public/demo/landing-page.png)
 
 **_Unified ETH Balance_**
 ![Unified ETH Balance](./public/demo/unified-eth-balance.png)
@@ -48,20 +46,17 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 **_Disperse UI_**
 ![Disperse](./public/demo/disperse-ui.png)
 
-**_Interchain Quote_**
-![Interchain Quote](./public/demo/interchain-quote.png)
-
 **_Sign And Execute Txn_**
 ![Sign And Execute Txn](./public/demo/sign-and-execute.png)
 
-**_Transfer Completed_**
-![Transfer Completed](./public/demo/transfer-completed.png)
+**_KLaster Explorer_**
+![Transfer Completed](./public/demo/klaster-explorer.png)
 
 ## Future Vision
 
-- Add more chains.
-- Add more features.
-- Add more UI.
+- Add support for any token to be used for gas payment.
+- Add support to disperse any ERC20 token on any chain.
+- Gas fee optimization for transfers.
 
 ## Instructions to setup
 
