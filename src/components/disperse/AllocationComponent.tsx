@@ -110,7 +110,7 @@ const AllocationComponent = ({ token }: { token: string }) => {
     else {
       getData();
     }
-  }, [klaster, mcClient]);
+  }, [klaster, mcClient, token]);
 
   return (
     <div className="flex justify-between w-full">
