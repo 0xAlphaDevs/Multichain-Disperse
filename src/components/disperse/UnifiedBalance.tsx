@@ -14,6 +14,13 @@ import {
   BicoV2AccountInitParams,
   MultichainAccount,
 } from "klaster-sdk";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const allocationData = [
   {
@@ -44,7 +51,8 @@ export function UnifiedBalance() {
   const [unifiedEthBalance, setUnifiedEthBalance] = useState(0);
   const [usdUnifiedEthBalance, setUsdUnifiedEthBalance] = useState(0);
 
-  const { klaster, mcClient } = useKlasterContext();
+  const { klaster, mcClient, nodeFeeChain, setNodeFeeChain } =
+    useKlasterContext();
   const { chain } = useAccount();
 
   const handleCopy = () => {
@@ -134,9 +142,9 @@ export function UnifiedBalance() {
               />
             </button>
           </div>
-          <div className="flex items-center">
-            <p className="text-lg text-gray-700 mr-2">Available Chains :</p>
+          <div className="flex justify-between px-4">
             <div className="flex gap-2 mt-2 items-center">
+              <p className="text-lg text-gray-700 mr-2">Available Chains :</p>
               {allocationData.map((item) => (
                 <img
                   key={item.chain}
@@ -145,7 +153,39 @@ export function UnifiedBalance() {
                 ></img>
               ))}
             </div>
+            <div className="flex items-center">
+              <p className="text-md font-semibold mr-4">Pay Gas on : </p>
+              <Select
+                value={nodeFeeChain}
+                onValueChange={(value) => {
+                  console.log("Selected Chain", value);
+                  setNodeFeeChain(value);
+                }}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Select Chain" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mainnet">Mainnet</SelectItem>
+                  <SelectItem value="arbitrum">Arbitrum</SelectItem>
+                  <SelectItem value="optimism">Optimism</SelectItem>
+                  <SelectItem value="base">Base</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+          <div className="flex w-full justify-end px-4 mt-2 items-center">
+            <p className="text-md font-semibold mr-4">Gas Token : </p>
+            <Select value={"eth"}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select Chain" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="eth">ETH</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex flex-col gap-1 mt-12 ml-2">
             <div className="flex">
               <span className="text-4xl font-bold">
@@ -154,7 +194,7 @@ export function UnifiedBalance() {
             </div>
             <div>
               <span className="text-lg text-gray-700">
-                {unifiedEthBalance} ETH
+                {unifiedEthBalance.toFixed(6)} ETH
               </span>
               {/* <span className="text-sm text-green-500 ml-1">+2.24%</span> */}
             </div>

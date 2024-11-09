@@ -14,13 +14,16 @@ import {
   MultichainClient,
   MultichainTokenMapping,
 } from "klaster-sdk";
-import { createWalletClient, custom } from "viem";
+import { createWalletClient, custom, Transport, WalletClient } from "viem";
 import { useAccount } from "@particle-network/connectkit";
 import { base, optimism, mainnet, arbitrum } from "viem/chains";
 
 interface KlasterContextProps {
   klaster: KlasterSDK<AccountInitData<BicoV2AccountInitParams>> | undefined;
   mcClient: MultichainClient | undefined;
+  signer: WalletClient<Transport> | undefined;
+  nodeFeeChain: string;
+  setNodeFeeChain: (chain: string) => void;
 }
 
 interface KlasterProviderProps {
@@ -31,6 +34,9 @@ interface KlasterProviderProps {
 const KlasterContext = createContext<KlasterContextProps>({
   klaster: undefined,
   mcClient: undefined,
+  signer: undefined,
+  nodeFeeChain: "base",
+  setNodeFeeChain: () => {},
 });
 
 // create a provider for the Klaster SDK
@@ -41,6 +47,8 @@ export const KlasterProvider: React.FC<KlasterProviderProps> = ({
   const [klaster, setKlaster] =
     useState<KlasterSDK<AccountInitData<BicoV2AccountInitParams>>>();
   const [mcClient, setMcClient] = useState<MultichainClient>();
+  const [signer, setSigner] = useState<WalletClient<Transport>>();
+  const [nodeFeeChain, setNodeFeeChain] = useState<string>("base");
   const { isConnected } = useAccount();
 
   useEffect(() => {
@@ -51,6 +59,8 @@ export const KlasterProvider: React.FC<KlasterProviderProps> = ({
       const signer = createWalletClient({
         transport: custom((window as any).ethereum),
       });
+
+      setSigner(signer);
 
       const [address] = await signer.getAddresses();
 
@@ -84,7 +94,9 @@ export const KlasterProvider: React.FC<KlasterProviderProps> = ({
   }, [isConnected]);
 
   return (
-    <KlasterContext.Provider value={{ klaster, mcClient }}>
+    <KlasterContext.Provider
+      value={{ klaster, mcClient, signer, nodeFeeChain, setNodeFeeChain }}
+    >
       {children}
     </KlasterContext.Provider>
   );

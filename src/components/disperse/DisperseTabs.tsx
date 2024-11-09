@@ -17,10 +17,21 @@ import { PlusCircle, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import AllocationComponent from "./AllocationComponent";
-import { isAddress } from "viem";
+import { Address, encodeFunctionData, erc20Abi, isAddress } from "viem";
+import { useKlasterContext } from "@/context/KlasterContext";
+import {
+  encodeSmartAccountCall,
+  buildItx,
+  InterchainTransaction,
+  Operation,
+  buildOperation,
+  Transaction,
+  buildTransaction,
+  QuoteResponse,
+} from "klaster-sdk";
 
-interface Row {
-  address: string;
+interface SendTxnData {
+  address: Address;
   chain: string;
   amount: string;
 }
@@ -36,6 +47,7 @@ export function DisperseTabs() {
   ]);
   const [etherTextareaContent, setEtherTextareaContent] = useState("");
   const [tokenTextareaContent, setTokenTextareaContent] = useState("");
+  const { klaster, mcClient, signer } = useKlasterContext();
 
   const addRow = (type: "ether" | "token") => {
     if (type === "ether") {
@@ -160,12 +172,62 @@ export function DisperseTabs() {
 
     // Send transaction
     console.log("Txn data:", dataToSend);
-    await executeTransaction();
+    await executeTransaction(dataToSend);
   };
 
   // TO DO: Implement this function
-  async function executeTransaction() {
+  async function executeTransaction(data: SendTxnData[]) {
     console.log("Executing transaction");
+
+    const txnData = encodeFunctionData({
+      abi: erc20Abi,
+      functionName: "transfer",
+      args: ["0x5C4185b8cCA5198a94bF2B97569DEb2bbAF1f50C", BigInt(220000)],
+    });
+
+    console.log("Txn data:", txnData);
+
+    const txns: Transaction[] = [
+      {
+        to: "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+        value: BigInt(0),
+        data: txnData,
+        gasLimit: BigInt(1000000), // TO DO
+      },
+    ];
+
+    const operations: Operation[] = [buildOperation(42161, txns)];
+
+    const itx: InterchainTransaction = {
+      operations: operations,
+      // pay fee with node fee operation
+      nodeFeeOperation: {
+        token: "0x0000000000000000000000000000000000000000",
+        chainId: 8453,
+      },
+    };
+    const iTx = buildItx(itx);
+
+    const quote: QuoteResponse = (await klaster?.getQuote(
+      iTx
+    )) as QuoteResponse;
+    console.log("Quote:", quote);
+
+    const [address] = (await signer?.getAddresses()) as Address[];
+
+    const signed = (await signer?.signMessage({
+      message: {
+        raw: quote.itxHash,
+      },
+      account: address,
+    })) as `0x${string}`;
+
+    console.log("Signed Txn :", signed);
+
+    const result = await klaster?.execute(quote, signed);
+
+    console.log("Result:", result);
+
     toast.success("Transaction sent successfully!");
   }
 
