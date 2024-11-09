@@ -4,9 +4,10 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 
 ### Features
 
-- Easy user onboarding with Particle Connect using ERC-4337 smart accounts.
-- Leverage Klaster for seamless account abstraction and improved user experience using the Klaster SDK.
-- Transfer tokens across multiple chains effortlessly in a single transaction.
+- Easy user onboarding with Particle Connect.
+- App level chain abstraction using the Klaster SDK.
+- Disperse tokens to multiple accounts across multiple chains in a single inter-chain transaction.
+- Pay gas fee on any chain.
 
 ## Table of Contents
 
