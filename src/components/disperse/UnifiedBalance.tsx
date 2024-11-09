@@ -200,30 +200,6 @@ export function UnifiedBalance() {
             </div>
           </div>
         </Card>
-
-        {/* <Card className="flex-1 p-4">
-          <h4 className="text-lg font-semibold mb-4">Allocation</h4>
-          <div className="space-y-2">
-            {allocationData.map((item) => (
-              <div key={item.chain} className="space-y-1">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    <img
-                      src={`${item.icon}`}
-                      className={`w-6 h-6 rounded-full mr-2`}
-                    ></img>
-                    <span className="text-xs">{item.chain}</span>
-                  </div>
-                  <span className="text-xs">${item.amount.toFixed(2)}</span>
-                </div>
-                <Progress
-                  value={(item.amount / totalBalance) * 100}
-                  className="h-1"
-                />
-              </div>
-            ))}
-          </div>
-        </Card> */}
       </div>
     </div>
   );

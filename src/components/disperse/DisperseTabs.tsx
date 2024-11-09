@@ -26,7 +26,14 @@ import { PlusCircle, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import AllocationComponent from "./AllocationComponent";
-import { Address, encodeFunctionData, erc20Abi, isAddress } from "viem";
+import {
+  Address,
+  encodeFunctionData,
+  erc20Abi,
+  formatEther,
+  formatUnits,
+  isAddress,
+} from "viem";
 import { useKlasterContext } from "@/context/KlasterContext";
 import {
   encodeSmartAccountCall,
@@ -37,7 +44,15 @@ import {
   Transaction,
   buildTransaction,
   QuoteResponse,
+  mcUSDC,
+  mcUSDT,
+  mcETH,
 } from "klaster-sdk";
+import {
+  chainIdToChainName,
+  chainNameToChainId,
+  getTokenAddress,
+} from "@/lib/utils";
 
 interface SendTxnData {
   address: Address;
@@ -56,7 +71,11 @@ export function DisperseTabs() {
   ]);
   const [etherTextareaContent, setEtherTextareaContent] = useState("");
   const [tokenTextareaContent, setTokenTextareaContent] = useState("");
-  const { klaster, mcClient, signer } = useKlasterContext();
+  const [interchainQuote, setInterchainQuote] = useState<any>(null);
+  const [isLoadingQuote, setIsLoadingQuote] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const { klaster, mcClient, signer, nodeFeeChain } = useKlasterContext();
 
   const addRow = (type: "ether" | "token") => {
     if (type === "ether") {
@@ -144,7 +163,10 @@ export function DisperseTabs() {
     } else return finalData;
   };
 
-  const handleSendTransaction = async () => {
+  const handleGetInterchainQuote = async () => {
+    setIsLoadingQuote(true);
+    setIsButtonDisabled(true);
+    console.log("Checking transaction data");
     let dataToSend: any = [];
 
     if (transferType === "ether") {
@@ -176,43 +198,81 @@ export function DisperseTabs() {
 
     if (dataToSend.length === 0) {
       toast.error("Please fill data in required format");
+      setIsButtonDisabled(false);
       return;
     }
 
     // Send transaction
     console.log("Txn data:", dataToSend);
-    await executeTransaction(dataToSend);
+    try {
+      await getInterChainQuote(dataToSend).then(() => {
+        setIsButtonDisabled(false);
+        setIsLoadingQuote(false);
+      });
+    } catch (error) {
+      console.log("Error:", error);
+      toast.error("Failed to get interchain quote");
+      // setIsLoadingQuote(true);
+      setIsButtonDisabled(false);
+      return;
+    }
   };
 
   // TO DO: Implement this function
-  async function executeTransaction(data: SendTxnData[]) {
-    console.log("Executing transaction");
+  async function getInterChainQuote(data: SendTxnData[]) {
+    console.log("Getting interchain quote", data);
 
-    const txnData = encodeFunctionData({
-      abi: erc20Abi,
-      functionName: "transfer",
-      args: ["0x5C4185b8cCA5198a94bF2B97569DEb2bbAF1f50C", BigInt(220000)],
+    let txnsPerChainId: { [key: number]: Transaction[] } = {};
+
+    data.map((sendTxn: SendTxnData) => {
+      const decimals = transferType == "ether" ? 18 : 6;
+      const txnData = encodeFunctionData({
+        abi: erc20Abi,
+        functionName: "transfer",
+        args: [
+          sendTxn.address,
+          BigInt(Number(sendTxn.amount) * 10 ** decimals),
+        ],
+      });
+      console.log(
+        "Txn data:",
+        txnData,
+        BigInt(Number(sendTxn.amount) * 10 ** decimals)
+      );
+
+      const txn: Transaction = {
+        to: getTokenAddress(sendTxn.chain, selectedToken, sendTxn.address),
+        value:
+          transferType == "ether"
+            ? BigInt(Number(sendTxn.amount) * 10 ** decimals)
+            : BigInt(0),
+        data: transferType == "ether" ? "0x" : txnData,
+        gasLimit: BigInt(800000), // TO DO
+      };
+
+      if (!txnsPerChainId[chainNameToChainId(sendTxn.chain)]) {
+        txnsPerChainId[chainNameToChainId(sendTxn.chain)] = [];
+      }
+      txnsPerChainId[chainNameToChainId(sendTxn.chain)].push(txn);
     });
 
-    console.log("Txn data:", txnData);
+    console.log(txnsPerChainId);
 
-    const txns: Transaction[] = [
-      {
-        to: "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
-        value: BigInt(0),
-        data: txnData,
-        gasLimit: BigInt(1000000), // TO DO
-      },
-    ];
+    const operations: Operation[] = Object.keys(txnsPerChainId).map(
+      (chainId) => {
+        return buildOperation(Number(chainId), txnsPerChainId[Number(chainId)]);
+      }
+    );
 
-    const operations: Operation[] = [buildOperation(42161, txns)];
+    // console.log(operations);
 
+    // no change after this
     const itx: InterchainTransaction = {
       operations: operations,
       // pay fee with node fee operation
       nodeFeeOperation: {
         token: "0x0000000000000000000000000000000000000000",
-        chainId: 8453,
+        chainId: chainNameToChainId(nodeFeeChain),
       },
     };
     const iTx = buildItx(itx);
@@ -221,22 +281,34 @@ export function DisperseTabs() {
       iTx
     )) as QuoteResponse;
     console.log("Quote:", quote);
+    setInterchainQuote(quote);
+  }
+
+  async function signAndExecuteInterchainTxn() {
+    if (!interchainQuote) {
+      toast.error("No interchain quote found");
+      return;
+    }
 
     const [address] = (await signer?.getAddresses()) as Address[];
+    try {
+      const signed = (await signer?.signMessage({
+        message: {
+          raw: interchainQuote.itxHash,
+        },
+        account: address,
+      })) as `0x${string}`;
 
-    const signed = (await signer?.signMessage({
-      message: {
-        raw: quote.itxHash,
-      },
-      account: address,
-    })) as `0x${string}`;
+      console.log("Signed Txn :", signed);
 
-    console.log("Signed Txn :", signed);
+      const result = await klaster?.execute(interchainQuote, signed);
+      console.log("Result:", result);
 
-    const result = await klaster?.execute(quote, signed);
-    console.log("Result:", result);
-
-    toast.success("Transaction sent successfully!");
+      toast.success("Transaction sent successfully!");
+    } catch (error) {
+      console.log("Error:", error);
+      toast.error("Failed to send transaction");
+    }
   }
 
   useEffect(() => {
@@ -248,7 +320,10 @@ export function DisperseTabs() {
     <Card className="p-4">
       <Tabs
         defaultValue="ether"
-        onValueChange={setTransferType}
+        onValueChange={(value) => {
+          setSelectedToken("");
+          setTransferType(value);
+        }}
         className="w-full px-4"
       >
         <TabsList className="grid w-full grid-cols-2">
@@ -336,24 +411,48 @@ export function DisperseTabs() {
               onChange={(e) => setEtherTextareaContent(e.target.value)}
             />
             <div className="flex justify-center pt-6 pb-4">
-              {/* TO DO */}
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button>Get Interchain Quote</Button>
+                  <Button
+                    onClick={handleGetInterchainQuote}
+                    disabled={isButtonDisabled}
+                  >
+                    {isButtonDisabled
+                      ? "Getting quote.."
+                      : "Get Interchain quote"}
+                  </Button>
                 </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Interchain Quote</DialogTitle>
-                    <DialogDescription>
-                      Paying 0.000016 ETH ~0.047 USD  on Base for this interchain txn.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="flex justify-center w-full">
-                    <Button variant="outline" onClick={handleSendTransaction}>
-                      Sign and execute
-                    </Button>
-                  </div>
-                </DialogContent>
+                {!isLoadingQuote && (
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Interchain Quote</DialogTitle>
+                      <DialogDescription>
+                        <>
+                          Paying {interchainQuote?.paymentInfo.tokenAmount} ETH
+                          (~
+                          {
+                            interchainQuote?.paymentInfo.tokenValue as number
+                          }{" "}
+                          USD) on{" "}
+                          {chainIdToChainName(
+                            interchainQuote?.paymentInfo.chainId as string
+                          )}{" "}
+                          for this interchain txn.
+                        </>
+                      </DialogDescription>
+                    </DialogHeader>
+                    {!isLoadingQuote && (
+                      <div className="flex justify-center w-full">
+                        <Button
+                          variant="outline"
+                          onClick={signAndExecuteInterchainTxn}
+                        >
+                          Sign and execute
+                        </Button>
+                      </div>
+                    )}
+                  </DialogContent>
+                )}
               </Dialog>
             </div>
           </div>
@@ -474,25 +573,51 @@ export function DisperseTabs() {
                   value={tokenTextareaContent}
                   onChange={(e) => setTokenTextareaContent(e.target.value)}
                 />
-                {/* TO DO */}
+
                 <div className="flex justify-center pt-6 pb-4">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button>Get Interchain Quote</Button>
+                      <Button
+                        onClick={handleGetInterchainQuote}
+                        disabled={isButtonDisabled}
+                      >
+                        {isButtonDisabled
+                          ? "Getting quote.."
+                          : "Get Interchain quote"}
+                      </Button>
                     </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Interchain Quote</DialogTitle>
-                        <DialogDescription>
-                          Paying 0.000016 ETH ~0.047 USD  on Base for this interchain txn.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="flex justify-center w-full">
-                        <Button variant="outline" onClick={handleSendTransaction}>
-                          Sign and execute
-                        </Button>
-                      </div>
-                    </DialogContent>
+                    {!isLoadingQuote && (
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Interchain Quote</DialogTitle>
+                          <DialogDescription>
+                            <>
+                              Paying {interchainQuote?.paymentInfo.tokenAmount}{" "}
+                              ETH (~
+                              {
+                                interchainQuote?.paymentInfo
+                                  .tokenValue as number
+                              }{" "}
+                              USD) on{" "}
+                              {chainIdToChainName(
+                                interchainQuote?.paymentInfo.chainId as string
+                              )}{" "}
+                              for this interchain txn.
+                            </>
+                          </DialogDescription>
+                        </DialogHeader>
+                        {!isLoadingQuote && (
+                          <div className="flex justify-center w-full">
+                            <Button
+                              variant="outline"
+                              onClick={signAndExecuteInterchainTxn}
+                            >
+                              Sign and execute
+                            </Button>
+                          </div>
+                        )}
+                      </DialogContent>
+                    )}
                   </Dialog>
                 </div>
               </>
