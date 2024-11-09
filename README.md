@@ -9,7 +9,7 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 - Disperse tokens to multiple accounts across multiple chains in a single inter-chain transaction.
 - Pay gas fee on any chain.
 
-![App Demo](./public/demo/app-demo.gif)
+![App Demo](./public/demo/app-demo.png)
 
 ## Table of Contents
 
