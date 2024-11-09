@@ -12,6 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { PlusCircle, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -225,7 +234,6 @@ export function DisperseTabs() {
     console.log("Signed Txn :", signed);
 
     const result = await klaster?.execute(quote, signed);
-
     console.log("Result:", result);
 
     toast.success("Transaction sent successfully!");
@@ -328,7 +336,25 @@ export function DisperseTabs() {
               onChange={(e) => setEtherTextareaContent(e.target.value)}
             />
             <div className="flex justify-center pt-6 pb-4">
-              <Button onClick={handleSendTransaction}>Send Transaction</Button>
+              {/* TO DO */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>Get Interchain Quote</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Interchain Quote</DialogTitle>
+                    <DialogDescription>
+                      Paying 0.000016 ETH ~0.047 USD  on Base for this interchain txn.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex justify-center w-full">
+                    <Button variant="outline" onClick={handleSendTransaction}>
+                      Sign and execute
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </TabsContent>
@@ -448,10 +474,26 @@ export function DisperseTabs() {
                   value={tokenTextareaContent}
                   onChange={(e) => setTokenTextareaContent(e.target.value)}
                 />
+                {/* TO DO */}
                 <div className="flex justify-center pt-6 pb-4">
-                  <Button onClick={handleSendTransaction}>
-                    Send Transaction
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>Get Interchain Quote</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Interchain Quote</DialogTitle>
+                        <DialogDescription>
+                          Paying 0.000016 ETH ~0.047 USD  on Base for this interchain txn.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex justify-center w-full">
+                        <Button variant="outline" onClick={handleSendTransaction}>
+                          Sign and execute
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </>
             )}
