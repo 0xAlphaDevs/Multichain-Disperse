@@ -13,9 +13,10 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 
 1. [All Links](#links)
 2. [Sponsers Tech Stack](#sponsers-tech-stack)
-3. [App Demo](#app-demo-screenshots)
-4. [Instructions to setup and run locally ](#instructions-to-setup)
-5. [Team](#team)
+3. [High Level Architecture](#high-level-architecture)
+4. [App Demo](#app-demo-screenshots)
+5. [Instructions to setup and run locally ](#instructions-to-setup)
+6. [Team](#team)
 
 ## Links
 
@@ -27,6 +28,10 @@ A chain abstracted disperse app for instant multi chain token transfer in single
 
 - Klaster-SDK
 - Particle Connect
+
+## High Level Architecture
+
+![High Level Architecture](./public/high-level-architecture.png)
 
 ## App Demo Screenshots
 
