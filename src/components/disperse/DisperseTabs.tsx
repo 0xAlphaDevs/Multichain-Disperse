@@ -22,7 +22,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { PlusCircle, X } from "lucide-react";
+import {
+  ArrowBigRight,
+  PlusCircle,
+  SquareArrowOutUpRight,
+  X,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import AllocationComponent from "./AllocationComponent";
@@ -47,12 +52,14 @@ import {
   mcUSDC,
   mcUSDT,
   mcETH,
+  ExecuteResponse,
 } from "klaster-sdk";
 import {
   chainIdToChainName,
   chainNameToChainId,
   getTokenAddress,
 } from "@/lib/utils";
+import Link from "next/link";
 
 interface SendTxnData {
   address: Address;
@@ -74,6 +81,10 @@ export function DisperseTabs() {
   const [interchainQuote, setInterchainQuote] = useState<any>(null);
   const [isLoadingQuote, setIsLoadingQuote] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [txnInProcess, setTxnInProcess] = useState(false);
+  const [txnResult, setTxnResult] = useState<string>(
+    "0x76ec8180e8a1ac2493743c240c1112e0b93b3fc0ceda283bda6bb7c7bd062fb0"
+  );
 
   const { klaster, mcClient, signer, nodeFeeChain } = useKlasterContext();
 
@@ -165,6 +176,7 @@ export function DisperseTabs() {
 
   const handleGetInterchainQuote = async () => {
     setIsLoadingQuote(true);
+    setTxnResult("");
     setIsButtonDisabled(true);
     console.log("Checking transaction data");
     let dataToSend: any = [];
@@ -290,6 +302,7 @@ export function DisperseTabs() {
       return;
     }
 
+    setTxnInProcess(true);
     const [address] = (await signer?.getAddresses()) as Address[];
     try {
       const signed = (await signer?.signMessage({
@@ -301,13 +314,19 @@ export function DisperseTabs() {
 
       console.log("Signed Txn :", signed);
 
-      const result = await klaster?.execute(interchainQuote, signed);
+      const result: ExecuteResponse = (await klaster?.execute(
+        interchainQuote,
+        signed
+      )) as ExecuteResponse;
       console.log("Result:", result);
+      setTxnResult(result.itxHash);
 
       toast.success("Transaction sent successfully!");
+      setTxnInProcess(false);
     } catch (error) {
       console.log("Error:", error);
       toast.error("Failed to send transaction");
+      setTxnInProcess(false);
     }
   }
 
@@ -443,12 +462,26 @@ export function DisperseTabs() {
                     </DialogHeader>
                     {!isLoadingQuote && (
                       <div className="flex justify-center w-full">
-                        <Button
-                          variant="outline"
-                          onClick={signAndExecuteInterchainTxn}
-                        >
-                          Sign and execute
-                        </Button>
+                        {txnResult ? (
+                          <Link
+                            target="_blank"
+                            href={`https://explorer.klaster.io/details/${txnResult}`}
+                            className="text-blue-500 flex gap-2 items-center "
+                          >
+                            View Txn on Klaster Explorer{" "}
+                            <SquareArrowOutUpRight className="h-4 w-4" />
+                          </Link>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            onClick={signAndExecuteInterchainTxn}
+                            disabled={txnInProcess}
+                          >
+                            {txnInProcess
+                              ? "Txn in Process.."
+                              : "Sign and execute"}
+                          </Button>
+                        )}
                       </div>
                     )}
                   </DialogContent>
@@ -608,12 +641,26 @@ export function DisperseTabs() {
                         </DialogHeader>
                         {!isLoadingQuote && (
                           <div className="flex justify-center w-full">
-                            <Button
-                              variant="outline"
-                              onClick={signAndExecuteInterchainTxn}
-                            >
-                              Sign and execute
-                            </Button>
+                            {txnResult ? (
+                              <Link
+                                target="_blank"
+                                href={`https://explorer.klaster.io/details/${txnResult}`}
+                                className="text-blue-500 flex gap-2 items-center "
+                              >
+                                View Txn on Klaster Explorer{" "}
+                                <SquareArrowOutUpRight className="h-4 w-4" />
+                              </Link>
+                            ) : (
+                              <Button
+                                variant="outline"
+                                onClick={signAndExecuteInterchainTxn}
+                                disabled={txnInProcess}
+                              >
+                                {txnInProcess
+                                  ? "Txn in Process.."
+                                  : "Sign and execute"}
+                              </Button>
+                            )}
                           </div>
                         )}
                       </DialogContent>
